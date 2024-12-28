@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { GoHome } from "react-icons/go";
 import InputBar from "./InputBar";
@@ -8,7 +9,7 @@ const Middle = () => {
   return (
     <div className="flex space-x-2 items-center">
       <div>
-              <HomeIcon style={{ fontSize: 32 }} />
+        <HomeIcon style={{ fontSize: 32 }} />
       </div>
       <div>
         <InputBar />

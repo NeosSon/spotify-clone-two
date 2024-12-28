@@ -1,6 +1,11 @@
-import fetch from 'node-fetch';
+import React from "react";
 
-async function getSpotifyAccessToken() {
+// curl -X POST "https://accounts.spotify.com/api/token" \
+//      -H "Content-Type: application/x-www-form-urlencoded" \
+//      -d "grant_type=client_credentials&client_id=your-client-id&client_secret=your-client-secret"
+
+
+ export async function getSpotifyAccessToken(): Promise<string | undefined> {
     const url = 'https://accounts.spotify.com/api/token';
     const client_id = "a019006e595946299d4b47a15905a9ab";
     const client_secret = "5429f169188f430da347359a282a8942";
@@ -22,16 +27,17 @@ async function getSpotifyAccessToken() {
 
     if (response.ok) {
       const data: any = await response.json();
-        console.log('Access Token:', data.access_token);
+        // console.log('Access Token:', data.access_token);
         return data.access_token;
     } else {
-      console.error('Error:', response.statusText);
+      // console.error('Error:', response.statusText);
+      return undefined;
     }
   } catch (error) {
-    console.error('Request failed', error);
+    return undefined;
+    // console.error('Request failed', error);
   }
 }
-async function getAccessToken() {
-    const accessToken = await getSpotifyAccessToken();
-    return accessToken;
-}
+
+
+
