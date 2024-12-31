@@ -2,12 +2,7 @@ export async function getTracks(
   accessToken: string | undefined,
   search: string
 ) {
-<<<<<<< HEAD
-  const limit = 10;
-  const url = `https://api.spotify.com/v1/search?q=${search}&type=track&${limit}`;
-=======
   const url = `https://api.spotify.com/v1/search?q=${search}&type=track`;
->>>>>>> b4849845a05d965ff767f97d60567496317bb868
   const headers = {
     Authorization: `Bearer ${accessToken}`,
   };
@@ -27,8 +22,6 @@ export async function getTracks(
     return undefined;
   }
 }
-<<<<<<< HEAD
-=======
 
 export async function getTracksById(
   accessToken: string | undefined,
@@ -69,4 +62,3 @@ export async function getTracksById(
     return undefined;
   }
 }
->>>>>>> b4849845a05d965ff767f97d60567496317bb868

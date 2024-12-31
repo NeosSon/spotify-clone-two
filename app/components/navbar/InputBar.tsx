@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import Tracks from "../search/Tracks";
+
 import { useInputStore, useSubmitButtonStore } from "@/app/zustand-store/store";
 
 const InputBar = () => {
@@ -13,10 +13,8 @@ const InputBar = () => {
 
   const handleSubmit = () => {
     setSubmitValue(true);
-    
   };
 
-  console.log("Input Value:", inputValue);
   useEffect(() => {
     setIsClient(true);
     setSubmitValue(false);
@@ -30,15 +28,20 @@ const InputBar = () => {
   return (
     <>
       {/* Input Bar */}
-      <div className="flex items-center space-x-2 border p-2 rounded-full shadow-md w-80">
+      <div className="flex items-center space-x-2 border p-2 rounded-full shadow-md w-full sm:w-80">
         <input
           type="text"
           value={inputValue}
           onChange={handleInputChange}
           placeholder="What do you want to play?"
-          className="border-none outline-none flex-1 text-base px-10 py-1"
+          className="border-none outline-none flex-1 text-base px-4 py-2"
         />
-        
+        <button
+          onClick={handleSubmit}
+          className="hover:bg-slate-200 rounded-full px-1 py-2 text-green-500 flex items-center"
+        >
+          Search
+        </button>
       </div>
     </>
   );
