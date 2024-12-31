@@ -1,6 +1,6 @@
 "use client";
 import { getSpotifyAccessToken } from "@/app/api/spotify-token/route";
-import { getTracks } from "@/app/api/search/route";
+import { getTracks } from "@/app/api/search/tracks/route";
 import React, { useEffect, useState } from "react";
 import { useInputStore, useSubmitButtonStore } from "@/app/zustand-store/store";
 
