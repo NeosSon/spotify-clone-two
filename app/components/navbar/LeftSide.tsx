@@ -1,12 +1,15 @@
 "use client";
+import Link from "next/link";
 import React from "react";
 import { SlSocialSpotify } from "react-icons/sl";
 
 const LeftSide = () => {
-    const SpotifyIcon = SlSocialSpotify as unknown as React.FC<React.SVGProps<SVGSVGElement>>;
+  const SpotifyIcon = SlSocialSpotify as unknown as React.FC<
+    React.SVGProps<SVGSVGElement>
+  >;
 
   return (
-    <div className="mx-2">
+    <div className="mx-2 ">
       <SpotifyIcon style={{ fontSize: 32 }} />
     </div>
   );
