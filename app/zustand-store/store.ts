@@ -27,6 +27,6 @@ export const useSubmitButtonStore = create<SubmitBurronStore>((set: any) => ({
 }));
     
 export const useSelectCategoryStore = create<SelectCategoryStore>((set: any) => ({
-  selectedCategory: "",
+  selectedCategory: "Tracks",
   setSelectedCategory: (value: any) => set({ selectedCategory: value }),
 }));

@@ -11,7 +11,7 @@ const Middle = () => {
   return (
     <div className="flex space-x-2 items-center">
       <div className="hover:cursor-pointer hover:bg-slate-100 hover:rounded-full hover:p-2">
-        <Link href="/" >
+        <Link href="/" onClick={() => window.location.reload()}>
           <HomeIcon style={{ fontSize: 32 }} />
         </Link>
       </div>
