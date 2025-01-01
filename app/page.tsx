@@ -1,3 +1,4 @@
+"use client";
 import NavBar from "./components/navbar/NavBar";
 import ChooseWhatToDisplay from "./components/display/ChooseWhatToDisplay";
 
