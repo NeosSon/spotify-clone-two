@@ -8,8 +8,8 @@ export const env = createEnv({
   },
   
   runtimeEnv: {
-    NEXT_PUBLIC_CLIENTID: process.env.NEXT_PUBLIC_CLIENT_ID as string,
-    NEXT_PUBLIC_CLIENTSECRET: process.env.NEXT_PUBLIC_CLIENT_SECRET as string,
+    NEXT_PUBLIC_CLIENTID: process.env.NEXT_PUBLIC_CLIENTID as string,
+    NEXT_PUBLIC_CLIENTSECRET: process.env.NEXT_PUBLIC_CLIENTSECRET as string,
   },
   
 });
