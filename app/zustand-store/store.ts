@@ -20,8 +20,12 @@ interface LoggedInStore {
   setLoggedIn: (value: boolean) => void;
 }
 interface TokenStore {
-  tokenObject: Object;
+  tokenObject: any;
   setTokenObject: (value: Object) => void;
+}
+interface AccessTokenStore {
+  accessToken: string;
+  setAccessToken: (value: string) => void;
 }
 
 // For the input bar
@@ -31,14 +35,16 @@ export const useInputStore = create<InputStore>((set: any) => ({
 }));
 //Check if the submit button is clicked in the input bar
 export const useSubmitButtonStore = create<SubmitBurronStore>((set: any) => ({
-    submitValue: false,
-    setSubmitValue: (value: any) => set({ submitValue: value }),
+  submitValue: false,
+  setSubmitValue: (value: any) => set({ submitValue: value }),
 }));
-    
-export const useSelectCategoryStore = create<SelectCategoryStore>((set: any) => ({
-  selectedCategory: "Tracks",
-  setSelectedCategory: (value: any) => set({ selectedCategory: value }),
-}));
+
+export const useSelectCategoryStore = create<SelectCategoryStore>(
+  (set: any) => ({
+    selectedCategory: "Tracks",
+    setSelectedCategory: (value: any) => set({ selectedCategory: value }),
+  })
+);
 
 export const useLoggedInStore = create<LoggedInStore>((set: any) => ({
   loggedIn: false,
@@ -48,4 +54,12 @@ export const useLoggedInStore = create<LoggedInStore>((set: any) => ({
 export const useTokenStore = create<TokenStore>((set: any) => ({
   tokenObject: {},
   setTokenObject: (value: any) => set({ tokenObject: value }),
+}));
+
+export const useAccessTokenStore = create((set) => ({
+  accessToken: localStorage.getItem("accessToken") || null, // Load from localStorage initially
+  setAccessToken: (token: string) => {
+    localStorage.setItem("accessToken", token); // Save to localStorage
+    set({ accessToken: token });
+  },
 }));

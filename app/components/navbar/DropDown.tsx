@@ -8,7 +8,7 @@ function Dropdown() {
   const { selectedCategory, setSelectedCategory} = useSelectCategoryStore();
 
   // Options for the dropdown
-  const options = ['Artists', 'Tracks', 'Playlists', 'Albums'];
+  const options = ['Artists', 'Tracks', 'Profile'];
 
   // Handle change in selection
   const handleChange = (event: any) => {

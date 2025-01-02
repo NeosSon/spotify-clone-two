@@ -1,12 +1,18 @@
 "use client";
-import { useSelectCategoryStore } from "@/app/zustand-store/store";
-import React from "react";
+import {
+  useLoggedInStore,
+  useSelectCategoryStore,
+} from "@/app/zustand-store/store";
+import React, { useEffect } from "react";
 import Artists from "../search/Artists";
 import Tracks from "../search/Tracks";
+import Profile from "../search/Profile";
 // import Albums from "../search/Albums";
 
 const ChooseWhatToDisplay = () => {
   const { selectedCategory, setSelectedCategory } = useSelectCategoryStore();
+  const { loggedIn, setLoggedIn } = useLoggedInStore();
+  
   return (
     <div>
       {selectedCategory === "Artists" ? (
@@ -15,9 +21,8 @@ const ChooseWhatToDisplay = () => {
         <Tracks />
       ) : selectedCategory === "Playlists" ? (
         <h1>Playlists</h1>
-      ) : selectedCategory === "Albums" ? (
-              // <Albums />
-              <h1>Albums</h1>
+      ) : selectedCategory === "Profile" ? (
+        <Profile />
       ) : (
         <h1>Choose a category</h1>
       )}

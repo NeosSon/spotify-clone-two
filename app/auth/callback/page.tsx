@@ -1,8 +1,9 @@
 "use client";
 
-import { useLoggedInStore, useTokenStore } from "@/app/zustand-store/store";
+import { useAccessTokenStore, useLoggedInStore, useTokenStore } from "@/app/zustand-store/store";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { access } from 'fs';
 
 export default function Callback() {
   const router = useRouter();
@@ -10,11 +11,10 @@ export default function Callback() {
   const code = searchParams.get("code");
   const error = searchParams.get("error");
 
-  // const [tokenData, setTokenData] = useState<any>(null);
-  const {tokenObject, setTokenObject} = useTokenStore();
+  const { tokenObject, setTokenObject } = useTokenStore();
+  const { accessToken, setAccessToken } = useAccessTokenStore() as { accessToken: string, setAccessToken: (token: string) => void };
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const {loggedIn, setLoggedIn} = useLoggedInStore();
-  const tokenJson = JSON.stringify(tokenObject);
+
   useEffect(() => {
     const fetchToken = async () => {
       if (code) {
@@ -31,42 +31,35 @@ export default function Callback() {
             return;
           }
 
-          const data: Object = await response.json();
-          setTokenObject(data);
-          if (tokenJson) {
-          setLoggedIn(true);
-          }
-          if (!tokenJson) {
-            setLoggedIn(false);
-          }
+          const data = await response.json();
+
+          console.log("API Response:", data); // Debug API response
+          setTokenObject(data); // Update Zustand state
+          setAccessToken(data.access_token); // Update Zustand state
+          router.push("/"); // Redirect to home page
         } catch (err) {
+          console.error(err);
           setErrorMessage("An error occurred while fetching the token.");
         }
       }
     };
 
     fetchToken();
-    router.push("/"); // comment out if you want to see the page with details
+    // Comment out router.push("/") for debugging
   }, [code]);
+
+  // Debug updated Zustand state
+  useEffect(() => {
+    console.log("Updated tokenObject:", tokenObject);
+  }, [tokenObject]);
 
   if (error) {
     return <p>Error during authentication: {error}</p>;
   }
 
   return (
-    // <div>
-    //   <h1>Spotify Authentication Callback</h1>
-    //   {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
-    //   {!errorMessage && !tokenData && <p>Processing...</p>}
-    //   {tokenData && (
-    //     <div>
-    //       <h2>Access Token:</h2>
-    //       <pre>{JSON.stringify(tokenData, null, 2)}</pre>
-    //     </div>
-    //   )}
-    // </div>
     <div>
-      return <p>Redirecting...</p>;
+      <p>Redirecting...</p>
     </div>
   );
 }
