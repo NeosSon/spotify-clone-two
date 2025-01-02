@@ -15,6 +15,15 @@ interface SelectCategoryStore {
   setSelectedCategory: (value: string) => void;
 }
 
+interface LoggedInStore {
+  loggedIn: boolean;
+  setLoggedIn: (value: boolean) => void;
+}
+interface TokenStore {
+  tokenObject: Object;
+  setTokenObject: (value: Object) => void;
+}
+
 // For the input bar
 export const useInputStore = create<InputStore>((set: any) => ({
   inputValue: "",
@@ -29,4 +38,14 @@ export const useSubmitButtonStore = create<SubmitBurronStore>((set: any) => ({
 export const useSelectCategoryStore = create<SelectCategoryStore>((set: any) => ({
   selectedCategory: "Tracks",
   setSelectedCategory: (value: any) => set({ selectedCategory: value }),
+}));
+
+export const useLoggedInStore = create<LoggedInStore>((set: any) => ({
+  loggedIn: false,
+  setLoggedIn: (value: any) => set({ loggedIn: value }),
+}));
+
+export const useTokenStore = create<TokenStore>((set: any) => ({
+  tokenObject: {},
+  setTokenObject: (value: any) => set({ tokenObject: value }),
 }));

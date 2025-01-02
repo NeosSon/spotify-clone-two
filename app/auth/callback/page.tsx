@@ -1,5 +1,6 @@
 "use client";
 
+import { useLoggedInStore, useTokenStore } from "@/app/zustand-store/store";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -9,9 +10,11 @@ export default function Callback() {
   const code = searchParams.get("code");
   const error = searchParams.get("error");
 
-  const [tokenData, setTokenData] = useState<any>(null);
+  // const [tokenData, setTokenData] = useState<any>(null);
+  const {tokenObject, setTokenObject} = useTokenStore();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
+  const {loggedIn, setLoggedIn} = useLoggedInStore();
+  const tokenJson = JSON.stringify(tokenObject);
   useEffect(() => {
     const fetchToken = async () => {
       if (code) {
@@ -28,8 +31,14 @@ export default function Callback() {
             return;
           }
 
-          const data = await response.json();
-          setTokenData(data);
+          const data: Object = await response.json();
+          setTokenObject(data);
+          if (tokenJson) {
+          setLoggedIn(true);
+          }
+          if (!tokenJson) {
+            setLoggedIn(false);
+          }
         } catch (err) {
           setErrorMessage("An error occurred while fetching the token.");
         }
