@@ -3,32 +3,33 @@
 import { useLoggedInStore, useTokenStore } from "@/app/zustand-store/store";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { set } from "zod";
 
 const LoginButton: React.FC = () => {
   const { loggedIn, setLoggedIn } = useLoggedInStore();
   const { tokenObject, setTokenObject } = useTokenStore();
-  const tokenJson = JSON.stringify(tokenObject);
+  
   const router = useRouter();
   useEffect(() => {
-    try {
-      if (tokenJson) {
-        setLoggedIn(true);
-        console.log("tokenJson", tokenJson);
-      }
-      if (!tokenJson) {
-        setLoggedIn(false);
-      }
-    } catch (err) {
-      console.log("Error:", err);
-    }
-  }, [tokenJson]);
+    // This is a workaround to keep the user logged in after a refresh
+    const sessionLoggedIn = sessionStorage.getItem("loggedIn") === "true";
+    setLoggedIn(sessionLoggedIn);
+    console.log("loggedIn", loggedIn);
+    
+  }, [loggedIn]);
   const handleLogin = () => {
     router.push("/api/auth/login");
+    setLoggedIn(true);
+    sessionStorage.setItem("loggedIn", "true");
+  };
+  const handleLogout = () => {
+    setLoggedIn(false);
+    sessionStorage.setItem("loggedIn", "false");
   };
 
   return (
     <>
-      {loggedIn ? (
+      {!loggedIn ? (
         <button
           onClick={handleLogin}
           style={{
@@ -40,10 +41,10 @@ const LoginButton: React.FC = () => {
             cursor: "pointer",
           }}
         >
-          Login with Spotify 
+          Login with Spotify
         </button>
       ) : (
-        <p>Signed In as  </p>
+        <button onClick={handleLogout}>Sign out </button>
       )}
     </>
   );
