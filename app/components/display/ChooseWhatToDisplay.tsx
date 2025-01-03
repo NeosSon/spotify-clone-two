@@ -1,5 +1,6 @@
 "use client";
 import {
+  useAccessTokenStore,
   useLoggedInStore,
   useSelectCategoryStore,
 } from "@/app/zustand-store/store";
@@ -12,6 +13,7 @@ import Profile from "../search/Profile";
 const ChooseWhatToDisplay = () => {
   const { selectedCategory, setSelectedCategory } = useSelectCategoryStore();
   const { loggedIn, setLoggedIn } = useLoggedInStore();
+  
   
   return (
     <div>

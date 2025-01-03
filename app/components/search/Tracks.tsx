@@ -1,10 +1,13 @@
 "use client";
-
-import { getSpotifyAccessToken } from "@/app/api/spotify-token/route";
-import { getTracks, getTracksById } from "@/app/api/search/tracks/route";
+import { getTracks, getTracksByIdOrName } from "@/app/api/search/tracks/route";
 import React, { useEffect, useState } from "react";
-import { useInputStore, useSubmitButtonStore } from "@/app/zustand-store/store";
+import {
+  useAccessTokenStore,
+  useInputStore,
+  useSubmitButtonStore,
+} from "@/app/zustand-store/store";
 import { Card, CardContent } from "@/components/ui/card";
+import SpotifyPlayer from "react-spotify-web-playback";
 
 const Tracks = () => {
   const [searchResults, setSearchResults] = useState([]);
@@ -12,12 +15,17 @@ const Tracks = () => {
   const { setSubmitValue, submitValue } = useSubmitButtonStore();
   const [isLoading, setIsLoading] = useState(false);
   const [isClient, setIsClient] = useState(false);
+  const [currentTrackUri, setCurrentTrackUri] = useState<string | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const { accessToken, setAccessToken } = useAccessTokenStore();
 
   const fetchTrackData = async () => {
-    setIsLoading(true); // Start loading
+    
+    setIsLoading(true);
     try {
-      const accessToken = await getSpotifyAccessToken();
-      const tracks = await getTracks(accessToken, inputValue);
+      const token = accessToken;
+      setAccessToken(token || "");
+      const tracks = await getTracks(token || "", inputValue);
 
       if (tracks?.items?.length) {
         const songsMapped = tracks.items.map((track: any) => ({
@@ -25,21 +33,26 @@ const Tracks = () => {
           artist: track.artists[0].name,
           album: track.album.name,
           id: track.id,
+          uri: track.uri,
           image: track.album.images[0]?.url || "",
         }));
 
         const detailedTracks = [];
         for (const track of songsMapped) {
           try {
-            const trackData = await getTracksById(accessToken, track.id);
-            if (trackData) {
+            const trackData = await getTracksByIdOrName(token || "", track.name);
+            
+            if (trackData && trackData.album && trackData.album.images) {
               detailedTracks.push({
                 ...track,
                 image: trackData.album.images[0]?.url || track.image,
               });
+            } else {
+              detailedTracks.push(track);
             }
           } catch (error) {
             console.error("Error fetching track details:", error);
+            detailedTracks.push(track);
           }
         }
 
@@ -48,7 +61,7 @@ const Tracks = () => {
     } catch (error) {
       console.error("Error fetching tracks:", error);
     } finally {
-      setIsLoading(false); // End loading
+      setIsLoading(false);
     }
   };
 
@@ -60,10 +73,19 @@ const Tracks = () => {
     setSubmitValue(false);
   }, [submitValue]);
 
+  const playTrack = (trackUri: string) => {
+    if (currentTrackUri === trackUri && isPlaying) {
+      setIsPlaying(false);
+    } else {
+      setCurrentTrackUri(trackUri);
+      setIsPlaying(true);
+    }
+  };
+
   if (!isClient) {
     return <div>Loading...</div>;
   }
-
+  // console.log(searchResults);
   return (
     <div className="flex flex-col mt-4">
       {isLoading ? (
@@ -72,7 +94,11 @@ const Tracks = () => {
         </div>
       ) : (
         <>
-          {inputValue && <h1 className="text-2xl font-bold mb-4">Tracks</h1>}
+          {inputValue && (
+            <h1 className="text-3xl font-bold mb-6 text-center text-[#1DB954]">
+              Tracks
+            </h1>
+          )}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {searchResults.length > 0 ? (
               searchResults.map((track: any, index: number) => (
@@ -90,17 +116,38 @@ const Tracks = () => {
                       <h2 className="text-lg font-semibold">{track.name}</h2>
                       <p className="text-sm text-gray-400">{track.artist}</p>
                       <p className="text-sm text-gray-500">{track.album}</p>
+                      <button
+                        onClick={() => playTrack(track.uri)}
+                        className="w-full py-2 bg-gradient-to-r from-green-400 to-green-600 text-white rounded-full font-bold hover:scale-105 transition duration-300"
+                      >
+                        {currentTrackUri === track.uri && isPlaying
+                          ? "Pause"
+                          : "Play"}
+                      </button>
                     </div>
                   </CardContent>
                 </Card>
               ))
             ) : (
-              <p className="text-gray-500 text-center">
-                {inputValue ? "No tracks found." : "Search for a track."}
-              </p>
+              <h2 className="text-3xl font-bold mb-4 text-center text-[#1DB954]">
+                {inputValue ? "No tracks found." : "Search for a track"}
+              </h2>
             )}
           </div>
         </>
+      )}
+
+      {currentTrackUri && (
+        <div className="mt-8">
+          <SpotifyPlayer
+            token={accessToken || ""}
+            uris={[currentTrackUri]}
+            play={isPlaying}
+            callback={(state) => {
+              if (!state.isPlaying) setIsPlaying(false);
+            }}
+          />
+        </div>
       )}
     </div>
   );

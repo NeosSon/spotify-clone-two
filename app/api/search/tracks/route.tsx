@@ -23,7 +23,7 @@ export async function getTracks(
   }
 }
 
-export async function getTracksById(
+export async function getTracksByIdOrName(
   accessToken: string | undefined,
   id: string
 ) {
@@ -32,7 +32,7 @@ export async function getTracksById(
     return undefined;
   }
 
-  const url = `https://api.spotify.com/v1/tracks/${id}`;
+  const url = `https://api.spotify.com/v1/search?q=${id}&type=track&limit=10`;
   const headers = {
     Authorization: `Bearer ${accessToken}`,
   };
@@ -45,7 +45,6 @@ export async function getTracksById(
 
     if (response.ok) {
       const data: any = await response.json();
-
       return data;
     } else if (response.status === 429) {
       const retryAfter = response.headers.get("Retry-After");

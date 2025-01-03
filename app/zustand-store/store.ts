@@ -1,3 +1,5 @@
+"use client";
+import { useEffect } from "react";
 import { create } from "zustand";
 
 interface InputStore {
@@ -23,9 +25,10 @@ interface TokenStore {
   tokenObject: any;
   setTokenObject: (value: Object) => void;
 }
-interface AccessTokenStore {
-  accessToken: string;
-  setAccessToken: (value: string) => void;
+interface AccessTokenState {
+  accessToken: string | null;
+  setAccessToken: (token: string) => void;
+  loadAccessToken: () => void;
 }
 
 // For the input bar
@@ -56,10 +59,25 @@ export const useTokenStore = create<TokenStore>((set: any) => ({
   setTokenObject: (value: any) => set({ tokenObject: value }),
 }));
 
-export const useAccessTokenStore = create((set) => ({
-  accessToken: localStorage.getItem("accessToken") || null, // Load from localStorage initially
+export const useAccessTokenStore = create<AccessTokenState>((set) => ({
+  accessToken: null,
   setAccessToken: (token: string) => {
-    localStorage.setItem("accessToken", token); // Save to localStorage
+    localStorage.setItem("accessToken", token);
+    set({ accessToken: token });
+  },
+  loadAccessToken: () => {
+    const token = localStorage.getItem("accessToken");
     set({ accessToken: token });
   },
 }));
+
+// Use this hook in your component
+export const useAccessTokenInitializer = () => {
+  const loadAccessToken = useAccessTokenStore((state) => state.loadAccessToken);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      loadAccessToken();
+    }
+  }, [loadAccessToken]);
+};

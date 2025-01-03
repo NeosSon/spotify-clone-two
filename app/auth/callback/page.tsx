@@ -33,7 +33,7 @@ export default function Callback() {
 
           const data = await response.json();
 
-          console.log("API Response:", data); // Debug API response
+           // Debug API response
           setTokenObject(data); // Update Zustand state
           setAccessToken(data.access_token); // Update Zustand state
           router.push("/"); // Redirect to home page
@@ -50,7 +50,7 @@ export default function Callback() {
 
   // Debug updated Zustand state
   useEffect(() => {
-    console.log("Updated tokenObject:", tokenObject);
+    
   }, [tokenObject]);
 
   if (error) {
