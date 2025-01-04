@@ -1,14 +1,22 @@
 "use client";
 import { getArtist } from "@/app/api/search/artists/route";
 import { getSpotifyAccessToken } from "@/app/api/spotify-token/route";
-import { useInputStore } from "@/app/zustand-store/store";
+import {
+  useAccessTokenStore,
+  useInputStore,
+  usePlayerStore,
+} from "@/app/zustand-store/store";
 import React, { useEffect, useState } from "react";
-import { useRouter } from 'next/navigation'; // Import useRouter
+import { useRouter } from "next/navigation"; // Import useRouter
+import WelcomeMessage from "../components/WelcomeMessage";
 
 const Artists = () => {
   const { inputValue } = useInputStore();
   const [listOfArtists, setListOfArtists] = useState([]);
   const router = useRouter(); // Initialize the router
+  const playTrack = usePlayerStore((state) => state.playTrack);
+  const { accessToken } = useAccessTokenStore();
+  const isExpired = localStorage.getItem("isExpired") === "true";
 
   useEffect(() => {
     async function getArtistFromApi() {
@@ -24,6 +32,9 @@ const Artists = () => {
         return undefined;
       }
     }
+    if (isExpired) {
+      return;
+    }
     getArtistFromApi();
   }, [inputValue]);
 
@@ -32,9 +43,32 @@ const Artists = () => {
     router.push(`/artists/${artistId}`);
   };
 
+  if (!accessToken || isExpired) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div>Please Sign In</div>
+      </div>
+    );
+  }
+
   return (
-    <div className="bg-black text-white rounded-lg shadow-lg p-6 max-w-4xl mx-auto mt-6">
-      <h2 className="text-3xl font-bold mb-4 text-center text-[#1DB954]">Spotify Artist Search</h2>
+  <div className={`bg-black text-white rounded-lg shadow-lg p-6 mx-auto w-screen  ${
+    listOfArtists.length === 0 && !inputValue
+      ? "bg-gradient-to-r from-[#1DB954] to-[#1DB954] bg-opacity-30 h-screen"
+      : "bg-opacity-100"
+  }`}>
+      <h2 className="text-3xl font-bold mb-4 text-center text-[#1DB954]">
+        Spotify Artist Search
+      </h2>
+      <div>
+        {listOfArtists.length === 0 && !inputValue && (
+          <WelcomeMessage
+            title="Welcome to Artists Search!"
+            bio="Start by searching for your favorite artists."
+            ending="Start Searching"
+          />
+        )}
+      </div>
       <ul className="space-y-4">
         {listOfArtists && inputValue ? (
           listOfArtists.map((artist: any) => (
@@ -52,7 +86,7 @@ const Artists = () => {
             </li>
           ))
         ) : (
-          <li className="text-center text-gray-400">Search for an artist</li>
+          null
         )}
       </ul>
     </div>

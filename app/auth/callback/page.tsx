@@ -1,14 +1,8 @@
 "use client";
 
-import {
-  useAccessTokenStore,
-  useLoggedInStore,
-  useTokenStore,
-} from "@/app/zustand-store/store";
+import { useAccessTokenStore, useTokenStore } from "@/app/zustand-store/store";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { access } from "fs";
-import { set } from "zod";
 
 export default function Callback() {
   const router = useRouter();
@@ -44,6 +38,7 @@ export default function Callback() {
           // Debug API response
           setTokenObject(data); // Update Zustand state
           setAccessToken(data.access_token);
+
           localStorage.setItem("accessToken", data.access_token);
 
           // Update Zustand state

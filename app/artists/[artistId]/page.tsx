@@ -1,10 +1,9 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useAccessTokenStore } from "../../zustand-store/store";
+import { useAccessTokenStore, usePlayerStore } from "../../zustand-store/store";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import SpotifyPlayer from "react-spotify-web-playback";
 import Link from "next/link";
 
 interface ArtistData {
@@ -70,9 +69,9 @@ const ArtistPage = ({ params }: { params: Promise<{ artistId: string }> }) => {
   const [isLoading, setIsLoading] = useState(true);
   const { accessToken } = useAccessTokenStore();
   const [playerToken, setPlayerToken] = useState<string | null>(null); // To store the access token for SpotifyPlayer
-  const [isPlaying, setIsPlaying] = useState(false);
-    const [currentTrackUri, setCurrentTrackUri] = useState<string | null>(null);
-  
+  const isExpired = localStorage.getItem("isExpired") === "true";
+  const playTheTrack = usePlayerStore((state) => state.playTrack);
+  const { currentTrack, isPlaying, pauseTrack } = usePlayerStore();
 
   useEffect(() => {
     if (artistId && accessToken) {
@@ -111,15 +110,23 @@ const ArtistPage = ({ params }: { params: Promise<{ artistId: string }> }) => {
     return <div className="text-center text-xl">Artist not found</div>;
   }
   const playTrack = (trackUri: string) => {
-    if (currentTrackUri === trackUri && isPlaying) {
-      setIsPlaying(false);
+    if (currentTrack === trackUri && isPlaying) {
+      pauseTrack();
     } else {
-      setCurrentTrackUri(trackUri);
-      setIsPlaying(true);
-      setPlayerToken(accessToken)
+      // setCurrentTrackUri(trackUri);
+      // setIsPlaying(true);
+      // setPlayerToken(accessToken)
+      playTheTrack(trackUri);
     }
   };
 
+  if (!accessToken || isExpired) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div>Please Sign In</div>
+      </div>
+    );
+  }
   return (
     <div className="relative overflow-hidden text-white bg-gradient-to-b from-transparent to-black">
       <Link href="/">
@@ -137,7 +144,7 @@ const ArtistPage = ({ params }: { params: Promise<{ artistId: string }> }) => {
       </div>
 
       {/* Artist Information */}
-      <div className="relative z-10 p-6 text-center">
+      <div className="relative z-10 p-6 text-center ">
         <motion.div
           className="w-64 h-64 mx-auto rounded-lg overflow-hidden mb-6"
           whileHover={{ scale: 1.05 }}
@@ -152,10 +159,12 @@ const ArtistPage = ({ params }: { params: Promise<{ artistId: string }> }) => {
           />
         </motion.div>
 
-        <h1 className="text-4xl font-bold mb-4">{artistData.name}</h1>
-        <p className="text-lg mb-4">{artistData.bio}</p>
+        <h1 className="text-4xl font-bold mb-4 text-slate-600">
+          {artistData.name}
+        </h1>
+        <p className="text-lg mb-4 text-slate-600">{artistData.bio}</p>
 
-        <div className="flex justify-center gap-12 mb-4">
+        <div className="flex justify-center gap-12 mb-4 text-slate-600">
           <div className="flex flex-col items-center">
             <p className="text-xl font-semibold">Followers</p>
             <p className="text-2xl">
@@ -202,14 +211,14 @@ const ArtistPage = ({ params }: { params: Promise<{ artistId: string }> }) => {
         </div>
       </div>
 
-      {/* Spotify Player */}
+      {/* Spotify Player
       {playerToken && (
         <SpotifyPlayer
           token={playerToken}
           uris={currentTrackUri ? [currentTrackUri] : []}
           play={isPlaying} // Automatically start playing
         />
-      )}
+      )} */}
     </div>
   );
 };
