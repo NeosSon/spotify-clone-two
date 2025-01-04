@@ -20,11 +20,10 @@ const Tracks = () => {
   const { accessToken, setAccessToken } = useAccessTokenStore();
 
   const fetchTrackData = async () => {
-    
     setIsLoading(true);
     try {
       const token = accessToken;
-      setAccessToken(token || "");
+
       const tracks = await getTracks(token || "", inputValue);
 
       if (tracks?.items?.length) {
@@ -40,8 +39,11 @@ const Tracks = () => {
         const detailedTracks = [];
         for (const track of songsMapped) {
           try {
-            const trackData = await getTracksByIdOrName(token || "", track.name);
-            
+            const trackData = await getTracksByIdOrName(
+              token || "",
+              track.name
+            );
+
             if (trackData && trackData.album && trackData.album.images) {
               detailedTracks.push({
                 ...track,
@@ -85,7 +87,7 @@ const Tracks = () => {
   if (!isClient) {
     return <div>Loading...</div>;
   }
-  // console.log(searchResults);
+
   return (
     <div className="flex flex-col mt-4">
       {isLoading ? (
@@ -94,45 +96,45 @@ const Tracks = () => {
         </div>
       ) : (
         <>
-          {inputValue && (
-            <h1 className="text-3xl font-bold mb-6 text-center text-[#1DB954]">
-              Tracks
-            </h1>
-          )}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {searchResults.length > 0 ? (
-              searchResults.map((track: any, index: number) => (
-                <Card
-                  key={index}
-                  className="p-4 bg-gray-800 text-white rounded-lg shadow-lg transform transition-transform duration-300 hover:scale-105 hover:shadow-xl cursor-pointer"
-                >
-                  <CardContent>
-                    <div className="flex flex-col items-center">
-                      <img
-                        src={track.image}
-                        alt={track.name}
-                        className="rounded-lg w-full h-40 object-cover mb-4"
-                      />
-                      <h2 className="text-lg font-semibold">{track.name}</h2>
-                      <p className="text-sm text-gray-400">{track.artist}</p>
-                      <p className="text-sm text-gray-500">{track.album}</p>
-                      <button
-                        onClick={() => playTrack(track.uri)}
-                        className="w-full py-2 bg-gradient-to-r from-green-400 to-green-600 text-white rounded-full font-bold hover:scale-105 transition duration-300"
-                      >
-                        {currentTrackUri === track.uri && isPlaying
-                          ? "Pause"
-                          : "Play"}
-                      </button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))
-            ) : (
-              <h2 className="text-3xl font-bold mb-4 text-center text-[#1DB954]">
-                {inputValue ? "No tracks found." : "Search for a track"}
+          {/* Ensure this div takes up full width of the screen, with centered content */}
+          <div className="flex justify-center w-full">
+            <div className="w-[80%] bg-black text-white rounded-lg shadow-lg p-6 max-w-4xl mx-auto items-center flex-col mt-2">
+              <h2 className="text-3xl font-bold mb-4 text-center text-[#1DB954] w-full">
+                Spotify Track Search
               </h2>
-            )}
+              <p className="text-center text-gray-400">Search for a track</p>
+            </div>
+          </div>
+
+          {/* The rest of the search results */}
+          <div className="flex flex-wrap justify-center gap-6 w-full mt-4">
+            {searchResults.map((track: any, index: number) => (
+              <Card
+                key={index}
+                className="p-4 bg-gray-800 text-white rounded-lg shadow-lg transform transition-transform duration-300 hover:scale-105 hover:shadow-xl cursor-pointer w-full sm:w-80 md:w-72 lg:w-64"
+              >
+                <CardContent>
+                  <div className="flex flex-col items-center">
+                    <img
+                      src={track.image}
+                      alt={track.name}
+                      className="rounded-lg w-full h-40 object-cover mb-4"
+                    />
+                    <h2 className="text-lg font-semibold">{track.name}</h2>
+                    <p className="text-sm text-gray-400">{track.artist}</p>
+                    <p className="text-sm text-gray-500">{track.album}</p>
+                    <button
+                      onClick={() => playTrack(track.uri)}
+                      className="w-full py-2 bg-gradient-to-r from-green-400 to-green-600 text-white rounded-full font-bold hover:scale-105 transition duration-300"
+                    >
+                      {currentTrackUri === track.uri && isPlaying
+                        ? "Pause"
+                        : "Play"}
+                    </button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </>
       )}

@@ -29,7 +29,7 @@ const Artists = () => {
 
   const handleViewClick = (artistId: string) => {
     // Navigate to the artist's detailed page (you'd need to create this page first)
-    router.push(`/artist/${artistId}`);
+    router.push(`/artists/${artistId}`);
   };
 
   return (

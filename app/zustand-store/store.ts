@@ -1,7 +1,7 @@
 "use client";
 import { useEffect } from "react";
 import { create } from "zustand";
-
+import { persist, PersistStorage } from "zustand/middleware";
 interface InputStore {
   inputValue: string;
   setInputValue: (value: string) => void;
@@ -27,8 +27,7 @@ interface TokenStore {
 }
 interface AccessTokenState {
   accessToken: string | null;
-  setAccessToken: (token: string) => void;
-  loadAccessToken: () => void;
+  setAccessToken: (token: string | null) => void;
 }
 
 // For the input bar
@@ -60,24 +59,7 @@ export const useTokenStore = create<TokenStore>((set: any) => ({
 }));
 
 export const useAccessTokenStore = create<AccessTokenState>((set) => ({
-  accessToken: null,
-  setAccessToken: (token: string) => {
-    localStorage.setItem("accessToken", token);
-    set({ accessToken: token });
-  },
-  loadAccessToken: () => {
-    const token = localStorage.getItem("accessToken");
-    set({ accessToken: token });
-  },
+  accessToken:
+    typeof window !== "undefined" ? localStorage.getItem("accessToken") : null, // Check if in the browser
+  setAccessToken: (token: string | null) => set({ accessToken: token }),
 }));
-
-// Use this hook in your component
-export const useAccessTokenInitializer = () => {
-  const loadAccessToken = useAccessTokenStore((state) => state.loadAccessToken);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      loadAccessToken();
-    }
-  }, [loadAccessToken]);
-};

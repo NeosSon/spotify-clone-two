@@ -1,6 +1,7 @@
 "use client";
-import { useAccessTokenStore } from "@/app/zustand-store/store";
 import React, { useEffect, useState } from "react";
+import { useAccessTokenStore } from "@/app/zustand-store/store";
+
 import SpotifyPlayer from "react-spotify-web-playback";
 
 const SPOTIFY_API = "https://api.spotify.com/v1/me/top/tracks";
@@ -41,10 +42,15 @@ const Profile = () => {
   };
 
   return (
-    <div className="container mx-auto py-12 px-4">
-      <h2 className="text-4xl font-bold text-center mb-6 text-black">
-        Your Top Tracks
-      </h2>
+    <div className="container mx-auto p-6">
+      <div className="flex justify-center w-[80%] bg-black text-white rounded-lg shadow-lg p-6 max-w-4xl mx-auto items-center flex-col mb-4">
+        <h2 className="text-3xl font-bold mb-4 text-center text-[#1DB954] w-full">
+          Your Top Tracks
+        </h2>
+        <p className="text-center text-gray-400">
+          Here are your top tracks on Spotify
+        </p>
+      </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {topTracks.map((track) => (
           <div

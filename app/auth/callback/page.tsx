@@ -1,9 +1,14 @@
 "use client";
 
-import { useAccessTokenStore, useLoggedInStore, useTokenStore } from "@/app/zustand-store/store";
+import {
+  useAccessTokenStore,
+  useLoggedInStore,
+  useTokenStore,
+} from "@/app/zustand-store/store";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { access } from 'fs';
+import { access } from "fs";
+import { set } from "zod";
 
 export default function Callback() {
   const router = useRouter();
@@ -12,7 +17,10 @@ export default function Callback() {
   const error = searchParams.get("error");
 
   const { tokenObject, setTokenObject } = useTokenStore();
-  const { accessToken, setAccessToken } = useAccessTokenStore() as { accessToken: string, setAccessToken: (token: string) => void };
+  const { accessToken, setAccessToken } = useAccessTokenStore() as {
+    accessToken: string;
+    setAccessToken: (token: string) => void;
+  };
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -33,9 +41,12 @@ export default function Callback() {
 
           const data = await response.json();
 
-           // Debug API response
+          // Debug API response
           setTokenObject(data); // Update Zustand state
-          setAccessToken(data.access_token); // Update Zustand state
+          setAccessToken(data.access_token);
+          localStorage.setItem("accessToken", data.access_token);
+
+          // Update Zustand state
           router.push("/"); // Redirect to home page
         } catch (err) {
           console.error(err);
@@ -49,9 +60,7 @@ export default function Callback() {
   }, [code]);
 
   // Debug updated Zustand state
-  useEffect(() => {
-    
-  }, [tokenObject]);
+  useEffect(() => {}, [tokenObject]);
 
   if (error) {
     return <p>Error during authentication: {error}</p>;

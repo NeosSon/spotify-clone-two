@@ -8,21 +8,16 @@
     "strict": true,
     "noEmit": true,
     "esModuleInterop": true,
-    "module": "node16",
-    "moduleResolution": "node16",
+    "module": "ESNext",
+    "moduleResolution": "node",
     "baseUrl": "./",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
+    "plugins": [{ "name": "next" }],
     "paths": {
-      "@/*": ["./*"],
-      "*": ["node_modules/*"]
+      "@/*": ["./*"]
     }
   },
   "include": [

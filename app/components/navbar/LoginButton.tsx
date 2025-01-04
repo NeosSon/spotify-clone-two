@@ -1,6 +1,6 @@
 "use client";
 
-import { useLoggedInStore, useTokenStore } from "@/app/zustand-store/store";
+import { useAccessTokenStore, useLoggedInStore, useTokenStore } from "@/app/zustand-store/store";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { set } from "zod";
@@ -8,6 +8,7 @@ import { set } from "zod";
 const LoginButton: React.FC = () => {
   const { loggedIn, setLoggedIn } = useLoggedInStore();
   const { tokenObject, setTokenObject } = useTokenStore();
+  const {setAccessToken} = useAccessTokenStore();
   
   const router = useRouter();
   useEffect(() => {
@@ -21,6 +22,7 @@ const LoginButton: React.FC = () => {
     router.push("/api/auth/login");
     setLoggedIn(true);
     sessionStorage.setItem("loggedIn", "true");
+    
   };
   const handleLogout = () => {
     setLoggedIn(false);
