@@ -8,7 +8,7 @@ function Dropdown() {
   const router = useRouter();
 
   // Options for the dropdown
-  const options = ["Artists", "Tracks", "Profile"];
+  const options = ["Artists", "Tracks", "Profile", "Playlists"];
 
   // Handle change in dropdown selection
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -26,7 +26,10 @@ function Dropdown() {
       } else if (selectedCategory === "Profile") {
         router.push("/profile");
       }
+      else if (selectedCategory === "Playlists") {
+        router.push("/playlist");
     }
+  }
   }, [selectedCategory, router]);
 
   return (

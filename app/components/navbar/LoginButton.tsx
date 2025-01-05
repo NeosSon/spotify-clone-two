@@ -67,18 +67,25 @@ const LoginButton: React.FC = () => {
   return (
     <>
       {accessToken || !isExpired ? (
-        <button onClick={handleLogout}>Sign out</button>
+        <button
+          onClick={handleLogout}
+          className="px-4 py-2 bg-green-500 text-white rounded-full cursor-pointer"
+        >
+          Sign out
+        </button>
       ) : (
         <button
           onClick={handleLogin}
-          style={{
-            padding: "10px 20px",
-            backgroundColor: "#1DB954",
-            color: "#fff",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-          }}
+          style={
+            {
+              // padding: "10px 20px",
+              // backgroundColor: "#1DB954",
+              // color: "#fff",
+              // border: "none",
+              // borderRadius: "full",
+              // cursor: "pointer",
+            }
+          }
         >
           Login with Spotify
         </button>

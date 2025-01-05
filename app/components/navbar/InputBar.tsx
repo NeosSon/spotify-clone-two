@@ -1,13 +1,17 @@
 "use client";
 import React, { useEffect, useState } from "react";
 
-import { useInputStore, useSelectCategoryStore, useSubmitButtonStore } from "@/app/zustand-store/store";
+import {
+  useInputStore,
+  useSelectCategoryStore,
+  useSubmitButtonStore,
+} from "@/app/zustand-store/store";
 
 const InputBar = () => {
   const { inputValue, setInputValue } = useInputStore();
   const { submitValue, setSubmitValue } = useSubmitButtonStore();
   const [isClient, setIsClient] = useState(false);
-  const {selectedCategory, setSelectedCategory} = useSelectCategoryStore();
+  const { selectedCategory, setSelectedCategory } = useSelectCategoryStore();
   const handleInputChange = (e: any) => {
     setInputValue(e.target.value);
   };
@@ -25,12 +29,11 @@ const InputBar = () => {
   if (!isClient) {
     return <div>Loading... </div>; // or a loading state
   }
-  console.log(selectedCategory)
 
   return (
     <>
       {/* Input Bar */}
-      <div className="flex items-center space-x-2 border p-2 rounded-full shadow-md w-full sm:w-80">
+      <div className="flex items-center space-x-2 border p-2 rounded-full shadow-md w-full sm:w-80 ">
         <input
           type="text"
           value={inputValue}
@@ -38,12 +41,14 @@ const InputBar = () => {
           placeholder="What do you want to play?"
           className="border-none outline-none flex-1 text-base px-4 py-2"
         />
-        {selectedCategory !== "Artists" &&<button
-          onClick={handleSubmit}
-          className="hover:bg-slate-200 rounded-full px-1 py-2 text-green-500 flex items-center"
-        >
-          Search
-        </button>}
+        {selectedCategory !== "Artists" && (
+          <button
+            onClick={handleSubmit}
+            className="hover:bg-slate-200 rounded-full px-1 py-2 text-green-500 flex items-center"
+          >
+            Search
+          </button>
+        )}
       </div>
     </>
   );

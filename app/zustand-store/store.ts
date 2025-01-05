@@ -39,6 +39,16 @@ interface PlayerState {
   pauseTrack: () => void;
 }
 
+interface PlaylistState {
+  playlistUrl: string;
+  setPlaylistUrl: (value: string) => void;
+}
+
+export const usePlaylistStore = create<PlaylistState>((set: any) => ({
+  playlistUrl: "",
+  setPlaylistUrl: (value: any) => set({ playlistId: value }),
+}));
+
 // For the input bar
 export const useInputStore = create<InputStore>((set: any) => ({
   inputValue: "",

@@ -17,16 +17,18 @@ const Navbar = () => {
   const isArtistsPage = pathname?.includes("artists");
 
   return (
-    <nav className="bg-white shadow-md text-slate-950 flex justify-between items-center p-4 ">
+    <nav className=" text-slate-950 flex bg-white items-center p-4 border border-gray-200 hover:shadow-2xl transition-shadow duration-300 ">
       <div className="flex items-start">
         <LeftSide />
       </div>
-      {/* Conditionally render the Middle component with a loading animation */}
-      {!isArtistsPage && (
-        <Suspense fallback={<LoadingSpinner />}>
-          <Middle />
-        </Suspense>
-      )}
+      <div className="flex items-center justify-center flex-1">
+        {/* Conditionally render the Middle component with a loading animation */}
+        {!isArtistsPage && (
+          <Suspense fallback={<LoadingSpinner />}>
+            <Middle />
+          </Suspense>
+        )}
+      </div>
       <RightSide />
     </nav>
   );

@@ -7,6 +7,24 @@ body {
   font-family: "Agu Display", sans-serif; /* Fallback to sans-serif */
 }
 
+@layer utilities {
+  .animate-gradient {
+    animation: gradientBackground 8s ease infinite;
+  }
+}
+
+@keyframes gradientBackground {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -69,6 +87,5 @@ body {
   }
   body {
     @apply bg-background text-foreground font-agu;
-    
   }
 }

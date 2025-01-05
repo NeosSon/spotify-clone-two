@@ -1,6 +1,5 @@
 "use client";
 import { getTracks, getTracksByIdOrName } from "@/app/api/search/tracks/route";
-
 import React, { useEffect, useState } from "react";
 import {
   useAccessTokenStore,
@@ -10,7 +9,7 @@ import {
 } from "@/app/zustand-store/store";
 import { Card, CardContent } from "@/components/ui/card";
 import SpotifyPlayer from "react-spotify-web-playback";
-import WelcomeMessage from "../components/WelcomeMessage"; // Import the WelcomeMessage component
+import SignIn from "../components/SignIn";
 
 const Tracks = () => {
   const [searchResults, setSearchResults] = useState([]);
@@ -33,7 +32,6 @@ const Tracks = () => {
     setIsLoading(true);
     try {
       const token = accessToken;
-
       const tracks = await getTracks(token || "", inputValue);
 
       if (tracks?.items?.length) {
@@ -53,7 +51,6 @@ const Tracks = () => {
               token || "",
               track.name
             );
-
             if (trackData && trackData.album && trackData.album.images) {
               detailedTracks.push({
                 ...track,
@@ -99,77 +96,50 @@ const Tracks = () => {
   if (!isClient) {
     return <div>Loading...</div>;
   }
+
   if (!accessToken || isExpired) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div>Please Sign In</div>
-      </div>
-    );
+    return <SignIn />;
   }
 
   return (
-    <div className={`flex flex-col w-screen ${searchResults.length === 0 && "h-screen"}`}>
+    <div className="flex flex-col w-screen bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 text-white min-h-screen">
       {isLoading ? (
         <div className="flex justify-center items-center min-h-screen">
-          <div className="loader">Loading tracks...</div>
+          <div className="text-xl font-bold text-center">Loading tracks...</div>
         </div>
       ) : (
         <>
-          <div className="flex justify-center w-full">
-            <div
-              className={`
-    w-screen 
-    bg-black 
-    text-white 
-    rounded-lg 
-    shadow-lg 
-    p-6 
-    mx-auto 
-    items-center 
-    flex-col 
-    
-    ${
-      searchResults.length === 0
-        ? "bg-gradient-to-r from-[#1DB954] to-[#1DB954] bg-opacity-30 min-h-screen "
-        : "bg-opacity-100"
-    }
-  `}
-            >
+          <div className="container mx-auto p-6">
+            <div className="flex justify-center w-[80%] bg-black bg-opacity-90 text-white rounded-lg shadow-lg p-6 max-w-4xl mx-auto items-center flex-col mb-6">
               <h2 className="text-3xl font-bold mb-4 text-center text-[#1DB954] w-full">
-                Spotify Track Search
+                Search for Tracks
               </h2>
-
-              {/* No tracks found / Welcome message */}
-              {searchResults.length === 0 && (
-                <WelcomeMessage
-                  title="Welcome to Tracks Search!"
-                  bio="Start by searching for your favorite tracks. We'll help you find the best music."
-                  ending="Start Searching"
-                />
-              )}
+              <p className="text-center text-gray-400">
+                Search for your favorite tracks on spotify
+              </p>
             </div>
           </div>
 
-          {/* Show tracks */}
-          <div className="flex flex-wrap justify-center gap-6 w-full mt-4">
+          {/* Display Tracks */}
+          <div className="flex flex-wrap justify-center gap-6 w-full mt-6 px-4">
             {searchResults.map((track: any, index: number) => (
               <Card
                 key={index}
-                className="p-4 bg-gray-800 text-white rounded-lg shadow-lg transform transition-transform duration-300 hover:scale-105 hover:shadow-xl cursor-pointer w-full sm:w-80 md:w-72 lg:w-64"
+                className="p-4 bg-gray-800 bg-opacity-80 text-white rounded-lg shadow-lg transform transition-transform duration-300 hover:scale-105 hover:shadow-xl cursor-pointer w-full sm:w-80 md:w-72 lg:w-64"
               >
                 <CardContent>
                   <div className="flex flex-col items-center">
                     <img
                       src={track.image}
                       alt={track.name}
-                      className="rounded-lg w-full h-40 object-cover "
+                      className="rounded-lg w-full h-40 object-cover mb-4"
                     />
                     <h2 className="text-lg font-semibold">{track.name}</h2>
                     <p className="text-sm text-gray-400">{track.artist}</p>
-                    <p className="text-sm text-gray-500">{track.album}</p>
+                    <p className="text-sm text-gray-500 mb-4">{track.album}</p>
                     <button
                       onClick={() => playTrack(track.uri)}
-                      className="w-full py-2 bg-gradient-to-r from-green-400 to-green-600 text-white rounded-full font-bold hover:scale-105 transition duration-300"
+                      className="w-full py-2 bg-gradient-to-r from-green-400 to-green-600 text-white rounded-full font-bold hover:scale-105 transition-transform"
                     >
                       {currentTrack === track.uri && isPlaying
                         ? "Pause"

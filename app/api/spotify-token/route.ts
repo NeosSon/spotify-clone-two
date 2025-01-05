@@ -29,8 +29,7 @@ export async function getSpotifyAccessToken(): Promise<string | undefined> {
 
     if (response.ok) {
       const data: any = await response.json();
-      // console.log('Access Token:', data.access_token);
-      return data.access_token;
+      //       return data.access_token;
     } else {
       // console.error('Error:', response.statusText);
       return undefined;
